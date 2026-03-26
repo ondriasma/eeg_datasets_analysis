@@ -30,7 +30,7 @@ Key features:
 - Automatic dataset download and caching via MOABB/pooch
 - Flexible per-experiment overrides for task, subjects, and evaluation strategy
 - Multi-dataset merging with automatic subject ID offsetting and shape alignment
-- Four evaluation strategies from optimistic pooled splits to rigorous LOSO
+- Four evaluation strategies
 - Persistent results CSV — each run appends rows, enabling longitudinal comparison
 - Automatic learning rate finder via PyTorch Lightning
 - GPU support with automatic fallback to CPU
@@ -43,7 +43,7 @@ Key features:
 repo-root/
 ├── config.py           # Config class and Experiment dataclass
 ├── datasets.py         # DATASET_EVENT_MAPPINGS registry
-├── main.py             # Entry point and orchestration
+├── main.py             # Entry point
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
@@ -68,16 +68,13 @@ repo-root/
 **Requirements:** Python 3.11, pip
 
 ```bash
-# Clone the repository
 git clone <repo-url>
 cd Braindecode
 
-# Create and activate virtual environment
 python -m venv .venv
 .venv\Scripts\activate        # Windows
 source .venv/bin/activate     # Linux / macOS
 
-# Install dependencies
 pip install -r requirements.txt
 ```
 
@@ -86,44 +83,20 @@ pip install -r requirements.txt
 **Running the pipeline:**
 
 ```bash
-# Run from the repo root
 python main.py
 ```
 
-**VS Code launch configuration** — add to `.vscode/launch.json`:
 
-```json
-{
-  "configurations": [{
-    "name": "Run pipeline",
-    "type": "python",
-    "request": "launch",
-    "program": "${workspaceFolder}/main.py",
-    "cwd": "${workspaceFolder}",
-    "python": "${workspaceFolder}/.venv/Scripts/python.exe"
-  }]
-}
-```
 
 **Dataset cache:** Datasets are downloaded automatically on first use and cached in the `data/` folder inside the repository root. Subsequent runs read from cache without re-downloading. The `data/` folder is gitignored and will not be committed.
 
 ---
 
-## Usage
 
-All experiment configuration lives in `config.py`. Edit `Config.EXPERIMENTS` and `Config.MODELS`, then run:
-
-```bash
-python -m eeg_comparison.main
-```
-
-Results are appended to `outputs/results_all_runs.csv` and plots are saved to `outputs/plots/`.
-
----
 
 ## Configuration
 
-All settings are centralised in `eeg_comparison/config.py`.
+All settings are centralised in `config.py`.
 
 ### Experiments
 
@@ -240,12 +213,11 @@ Deep models are implemented via Braindecode and trained with PyTorch Lightning. 
 
 | Strategy | Description | Suitable for |
 |---|---|---|
-| `pooled_split` | Random 80/20 trial split; same subjects in train and test | Quick iteration; optimistic upper bound |
-| `stratified_kfold` | K-fold on pooled trials, class-balanced | Reliable ± std estimate; still subject-leaky |
-| `subject_split` | Hold out a fixed fraction of subjects entirely | Within-session generalisation |
-| `loso` | Leave-One-Subject-Out; every subject is test set once | Gold standard for BCI; most conservative |
+| `within_subject_split` | Random 80/20 trial split; same subjects in train and test 
+| `stratified_kfold` | K-fold on pooled trials, class-balanced
+| `subject_split` | Hold out a fixed fraction of subjects entirely
+| `loso` | Leave-One-Subject-Out; every subject is test set once
 
-LOSO is recommended for reporting results — it is the only strategy that guarantees no subject appears in both training and test data.
 
 ---
 
