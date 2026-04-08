@@ -57,18 +57,18 @@ def _run_one_fold_deep(
     train_loader = make_loader(X_train, y_train, shuffle=True)
     test_loader  = make_loader(X_test,  y_test,  shuffle=False)
 
-    n_channels           = X_train.shape[1]
-    n_classes            = len(np.unique(y_train))
+    n_channels = X_train.shape[1]
+    n_classes = len(np.unique(y_train))
     input_window_samples = X_train.shape[2]
 
-    base_model      = create_model(model_name, n_channels, n_classes, input_window_samples)
+    base_model = create_model(model_name, n_channels, n_classes, input_window_samples)
     lightning_model = LightningModel(
         base_model, n_classes,
         learning_rate=Config.LEARNING_RATE,
         weight_decay=Config.WEIGHT_DECAY,
     )
 
-    ckpt_name  = f'{spec_name}_{model_name}_fold{fold_idx:02d}_{{epoch:02d}}_{{val_acc:.3f}}'
+    ckpt_name = f'{spec_name}_{model_name}_fold{fold_idx:02d}_{{epoch:02d}}_{{val_acc:.3f}}'
     checkpoint = ModelCheckpoint(
         dirpath=Config.OUTPUT_DIR / 'checkpoints',
         filename=ckpt_name,
@@ -140,6 +140,7 @@ def train_model(
     spec,
     predictions_dict: dict,
     use_lr_finder:    bool = False,
+    dataset_ids:        np.array = None
 ) -> tuple[float, float]:
     """
     Train and evaluate model_name using the strategy defined in spec.
@@ -158,9 +159,10 @@ def train_model(
     eval_strategy = spec.resolve_eval_strategy()
 
     print(f"TRAINING: {model_name}  |  strategy: {eval_strategy}  |  {spec.name}")
+    #print(f"Train class dist: {np.bincount(y_train)}, Test class dist: {np.bincount(y_test)}")
     print(f"{'-' * 70}")
 
-    splits    = get_splits(eval_strategy, y, subjects)
+    splits = get_splits(eval_strategy, y, subjects, dataset_ids=dataset_ids)
     fold_accs = []
 
     for fold_idx, (train_idx, test_idx) in enumerate(splits):

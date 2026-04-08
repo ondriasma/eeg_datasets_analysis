@@ -46,7 +46,7 @@ def main() -> None:
         print(f"Experiment: {spec.name}")
         print(f"{'-' * 70}")
 
-        X, y, subjects = load_data(spec)
+        X, y, subjects, dataset_ids = load_data(spec)
 
         predictions_dict = {}
 
@@ -59,6 +59,7 @@ def main() -> None:
                 mean_acc, std_acc = train_model(
                     model_name, X, y, subjects, spec,
                     predictions_dict, use_lr,
+                    dataset_ids=dataset_ids
                 )
 
                 max_subj = spec.resolve_max_subjects()

@@ -59,19 +59,19 @@ class Config:
     """
 
     EXPERIMENTS = [
-        #Experiment("Combined_LeftRight", ["AlexMI", "Weibo2014"], task_type="movement_vs_rest", max_subjects=3),
+        Experiment("Combined_LeftRight", ["Beetl2021_A", "PhysionetMI"], task_type="movement_vs_rest", max_subjects=None),
         
         #Experiment("Combined_LeftRight2", ["Ofner2017", "Beetl2021_A", "AlexMI", "Weibo2014", "PhysionetMI"], task_type="movement_vs_rest", max_subjects=None),
 
-        Experiment("Combined_LeftRight3", ["AlexMI"], task_type="movement_vs_rest", max_subjects=4),
+        #Experiment("Combined_LeftRight3", ["AlexMI"], task_type="movement_vs_rest", max_subjects=4),
         
     ]
 
     MODELS = [
         'CSP+LDA',
         'EEGNet',
-        #'ShallowConvNet',
-        #'Deep4Net',
+        'ShallowConvNet',
+        'Deep4Net',
     ]
 
 
@@ -86,7 +86,7 @@ class Config:
     # 'stratified_kfold' — K-fold on trials
     # 'loso'             — Leave-One-Subject-Out
     # 'subject_split'    — holds out a fraction of subjects entirely
-    EVAL_STRATEGY     = 'within_subject_split'
+    EVAL_STRATEGY     = 'dataset_split'
     TEST_SIZE = 0.2 # ratio for within subject split
     KFOLD_N_SPLITS    = 5
     SUBJECT_TEST_RATIO = 0.2 # ratio for subject_split

@@ -12,7 +12,7 @@ DATASET_EVENT_MAPPINGS = {
         'n_subjects': 9,
         'original_events': ['left_hand', 'right_hand', 'feet', 'tongue'],
         'left_vs_right': {'left_hand': 0, 'right_hand': 1},
-        'all_classes': {'left_hand': 0, 'right_hand': 1, 'feet': 2, 'tongue': 3},
+        #'all_classes': {'left_hand': 0, 'right_hand': 1, 'feet': 2, 'tongue': 3},
         'movement_vs_rest': None,
     },
     'BNCI2014_004': {
@@ -42,7 +42,7 @@ DATASET_EVENT_MAPPINGS = {
         'n_subjects': 109,
         'original_events': ['left_hand', 'right_hand', 'feet', 'hands', 'rest'],
         'left_vs_right': {'left_hand': 0, 'right_hand': 1},
-        'all_classes': {'left_hand': 0, 'right_hand': 1, 'feet': 2, 'hands': 3, 'rest': 4},
+        #'all_classes': {'left_hand': 0, 'right_hand': 1, 'feet': 2, 'hands': 3, 'rest': 4},
         'movement_vs_rest': {'rest': 0, 'left_hand': 1, 'right_hand': 1, 'feet': 1, 'hands': 1},
     },
     'Schirrmeister2017': {

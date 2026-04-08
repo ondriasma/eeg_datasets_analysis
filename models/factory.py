@@ -19,7 +19,7 @@ def create_model(
     n_channels: int,
     n_classes: int,
     input_window_samples: int,
-) -> torch.nn.Module:
+) -> torch.nn.Module: #braindecode models inherits from this module
     """Braindecode model wrappers."""
     if model_name == 'EEGNet':
         return EEGNetv4(
