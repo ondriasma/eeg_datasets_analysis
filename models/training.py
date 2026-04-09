@@ -13,6 +13,8 @@ from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from pytorch_lightning.tuner import Tuner
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+
 from mne.decoding import CSP
 
 from config import Config
@@ -54,8 +56,17 @@ def _run_one_fold_deep(
     Train and evaluate a deep model on a single fold.
     Uses Pytorch LightningModule.
     """
+
+    sub_train_idx, sub_val_idx = train_test_split(
+        np.arange(len(X_train)),
+        test_size=0.15,
+        stratify=y_train,
+        random_state=Config.RANDOM_SEED,
+    )
+
     train_loader = make_loader(X_train, y_train, shuffle=True)
     test_loader  = make_loader(X_test,  y_test,  shuffle=False)
+    val_loader   = make_loader(X_train[sub_val_idx], y_train[sub_val_idx], shuffle=False)
 
     n_channels = X_train.shape[1]
     n_classes = len(np.unique(y_train))
@@ -94,7 +105,7 @@ def _run_one_fold_deep(
         lr_finder = tuner.lr_find(
             lightning_model,
             train_dataloaders=train_loader,
-            val_dataloaders=test_loader,
+            val_dataloaders=val_loader,
             min_lr=1e-5, max_lr=1e-1,
             num_training=Config.LR_FINDER_NUM_STEPS,
         )
@@ -110,7 +121,8 @@ def _run_one_fold_deep(
         import matplotlib.pyplot as plt
         plt.close(fig)
 
-    trainer.fit(lightning_model, train_loader, test_loader)
+    trainer.fit(lightning_model, train_loader, val_loader)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
     best_model = LightningModel.load_from_checkpoint(
         checkpoint.best_model_path,
@@ -118,7 +130,7 @@ def _run_one_fold_deep(
         n_classes=n_classes,
         learning_rate=Config.LEARNING_RATE,
         weight_decay=Config.WEIGHT_DECAY,
-    )
+    ).to(device)
     best_model.eval()
 
     all_y_true, all_y_pred = [], []

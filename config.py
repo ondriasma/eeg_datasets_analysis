@@ -59,11 +59,13 @@ class Config:
     """
 
     EXPERIMENTS = [
-        Experiment("Combined_LeftRight", ["Beetl2021_A", "PhysionetMI"], task_type="movement_vs_rest", max_subjects=None),
+        Experiment("Combined_LeftRight", ["AlexMI", "Weibo2014"], task_type="movement_vs_rest", max_subjects=3),
         
-        #Experiment("Combined_LeftRight2", ["Ofner2017", "Beetl2021_A", "AlexMI", "Weibo2014", "PhysionetMI"], task_type="movement_vs_rest", max_subjects=None),
+        #Experiment("Combined_LeftRight2", ["Weibo2014", "Beetl2021_A"], task_type="movement_vs_rest", max_subjects=None),
 
-        #Experiment("Combined_LeftRight3", ["AlexMI"], task_type="movement_vs_rest", max_subjects=4),
+        #Experiment("Combined_LeftRight3", ["Beetl2021_A", "PhysionetMI"], task_type="movement_vs_rest", max_subjects=None),
+
+        #Experiment("Combined_LeftRight", ["PhysionetMI", "Weibo2014"], task_type="movement_vs_rest", max_subjects=None),
         
     ]
 
@@ -75,7 +77,7 @@ class Config:
     ]
 
 
-    TASK_TYPE    = 'movement_vs_rest' #or left vs right
+    TASK_TYPE = 'movement_vs_rest' #or left vs right
     MAX_SUBJECTS = None
 
 
@@ -86,9 +88,9 @@ class Config:
     # 'stratified_kfold' — K-fold on trials
     # 'loso'             — Leave-One-Subject-Out
     # 'subject_split'    — holds out a fraction of subjects entirely
-    EVAL_STRATEGY     = 'dataset_split'
+    EVAL_STRATEGY = 'dataset_split'
     TEST_SIZE = 0.2 # ratio for within subject split
-    KFOLD_N_SPLITS    = 5
+    KFOLD_N_SPLITS = 5
     SUBJECT_TEST_RATIO = 0.2 # ratio for subject_split
 
     # Preprocessing config
