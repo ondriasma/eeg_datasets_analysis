@@ -11,7 +11,7 @@ import numpy as np
 
 from config import Config
 from datasets import DATASET_EVENT_MAPPINGS, print_dataset_summary
-from data.loading import load_data
+from processing.loading import load_data
 from models.training import train_model
 from results.persistence import append_results
 from results.plotting import plot_confusion_matrices, plot_model_comparison
