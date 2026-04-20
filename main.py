@@ -53,8 +53,8 @@ def main() -> None:
         for model_idx, model_name in enumerate(Config.MODELS):
             try:
                 use_lr = (
-                    Config.USE_LR_FINDER_FOR_ALL or
-                    (Config.USE_LR_FINDER and model_idx == 1)
+                    Config.USE_LR_FINDER and
+                    model_name in Config.LR_FINDER_USE
                 )
                 mean_acc, std_acc = train_model(
                     model_name, X, y, subjects, spec,

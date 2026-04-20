@@ -3,6 +3,7 @@
 venv/
 env/
 
+data/
 
 
 outputs/
@@ -29,3 +30,5 @@ desktop.ini
 lightning_logs/
 
 notes.txt
+inspector.py
+test.py

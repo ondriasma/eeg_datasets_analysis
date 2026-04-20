@@ -11,7 +11,7 @@ from typing import Optional
 
 import pytorch_lightning as pl
 import torch
-
+import mne
 
 @dataclass
 class Experiment:
@@ -59,7 +59,7 @@ class Config:
     """
 
     EXPERIMENTS = [
-        Experiment("Combined_LeftRight", ["AlexMI", "Weibo2014"], task_type="movement_vs_rest", max_subjects=3),
+        Experiment("Combined_LeftRight", ["Weibo2014"], task_type="movement_vs_rest", max_subjects=2),
         
         #Experiment("Combined_LeftRight2", ["Weibo2014", "Beetl2021_A"], task_type="movement_vs_rest", max_subjects=None),
 
@@ -73,8 +73,12 @@ class Config:
         'CSP+LDA',
         'EEGNet',
         'ShallowConvNet',
-        'Deep4Net',
+        #'Deep4Net',
+        #'BENDR',
+        #'CBraMod',
     ]
+
+    LR_FINDER_USE = {'EEGNet', 'ShallowConvNet', 'Deep4Net'}
 
 
     TASK_TYPE = 'movement_vs_rest' #or left vs right
@@ -88,7 +92,7 @@ class Config:
     # 'stratified_kfold' — K-fold on trials
     # 'loso'             — Leave-One-Subject-Out
     # 'subject_split'    — holds out a fraction of subjects entirely
-    EVAL_STRATEGY = 'dataset_split'
+    EVAL_STRATEGY = 'within_subject_split'
     TEST_SIZE = 0.2 # ratio for within subject split
     KFOLD_N_SPLITS = 5
     SUBJECT_TEST_RATIO = 0.2 # ratio for subject_split
@@ -98,7 +102,7 @@ class Config:
     HIGH_CUT_HZ   = 30
     RESAMPLE_FREQ = 100
     TMIN = 0.0
-    TMAX = 4.0
+    TMAX = 3.99
 
     # Training config
     BATCH_SIZE    = 64
@@ -124,9 +128,13 @@ class Config:
     @classmethod
     def setup(cls) -> None:
         """Create output directories, configure MNE data cache, print GPU info."""
-        import mne
         cls.DATA_DIR.mkdir(exist_ok=True)
-        mne.set_config('MNE_DATA', str(cls.DATA_DIR))
+        mne.set_config('MNE_DATA', 'data')
+
+        config = mne.get_config()
+        for key in list(config.keys()):
+            if key.startswith('MNE_DATASETS_') and key.endswith('_PATH'):
+                mne.set_config(key, None)
 
         cls.OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         (cls.OUTPUT_DIR / 'checkpoints').mkdir(exist_ok=True)

@@ -11,6 +11,8 @@ import torch
 from braindecode.models import Deep4Net, EEGNetv4, ShallowFBCSPNet
 from torch.utils.data import DataLoader, TensorDataset
 
+from braindecode.models import BENDR, CBraMod
+
 from config import Config
 
 
@@ -42,6 +44,24 @@ def create_model(
             n_outputs=n_classes,
             n_times=input_window_samples,
             final_conv_length='auto',
+        )
+    if model_name == 'BENDR':
+        return BENDR.from_pretrained(
+            "braindecode/braindecode-bendr",
+            n_outputs=n_classes,
+            n_chans=n_channels,              # number of channels (from config)
+            n_chans_pretrained=20,           # what it was pretrained on
+            n_times=input_window_samples,
+        )
+    if model_name == 'CBraMod':
+        
+        return CBraMod.from_pretrained(
+            "braindecode/cbramod-pretrained",
+            n_outputs=n_classes,
+            n_chans=n_channels,
+            n_times=input_window_samples,
+            sfreq=Config.RESAMPLE_FREQ, 
+            
         )
     raise ValueError(f"Unknown model: '{model_name}'. Choose from: EEGNet, ShallowConvNet, Deep4Net")
 

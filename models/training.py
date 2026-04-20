@@ -18,7 +18,7 @@ from sklearn.model_selection import train_test_split
 from mne.decoding import CSP
 
 from config import Config
-from data.splitting import get_splits
+from processing.splitting import get_splits
 from models.factory import create_model, make_loader
 from models.lightning import LightningModel
 
