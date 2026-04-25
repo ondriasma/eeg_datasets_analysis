@@ -88,6 +88,19 @@ DATASET_EVENT_MAPPINGS = {
         'all_classes': {'rest': 0, 'left_hand': 1, 'right_hand': 2, 'feet': 3},
         'movement_vs_rest': {'rest': 0, 'left_hand': 1, 'right_hand': 1, 'feet': 1},
     },
+    'Kaya2018': {
+        'description': 'Classical motor imagery dataset with left hand, right hand, and rest.',
+        'n_subjects': 7,
+        'original_events': ['left_hand', 'passive', 'right_hand'],
+        'left_vs_right': {'left_hand': 0, 'right_hand': 1},
+        'movement_vs_rest': {'passive': 0, 'left_hand': 1, 'right_hand': 1},
+    },
+    'Tavakolan2017': {
+        'description': 'Motor imagery dataset for three imaginary states of the same upper extremity.',
+        'n_subjects': 12,
+        'original_events': ['rest', 'right_elbow_flexion', 'right_hand'],
+        'movement_vs_rest': {'rest': 0, 'right_elbow_flexion': 1, 'right_hand': 1},
+    },
 }
 
 

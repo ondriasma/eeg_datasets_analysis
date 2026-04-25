@@ -59,7 +59,7 @@ class Config:
     """
 
     EXPERIMENTS = [
-        Experiment("Combined_LeftRight", ["Weibo2014"], task_type="movement_vs_rest", max_subjects=2),
+        Experiment("Combined_LeftRight", ["Tavakolan2017"], task_type="movement_vs_rest", max_subjects=None),
         
         #Experiment("Combined_LeftRight2", ["Weibo2014", "Beetl2021_A"], task_type="movement_vs_rest", max_subjects=None),
 

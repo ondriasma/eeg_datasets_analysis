@@ -30,5 +30,6 @@ desktop.ini
 lightning_logs/
 
 notes.txt
+new_reqs.txt
 inspector.py
 test.py

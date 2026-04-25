@@ -114,7 +114,6 @@ def _load_single_raw(dataset_name: str, max_subjects: Optional[int], task_type: 
         }
         if not valid_event_ids:
             print("skip (no matching events)")
-            #del raw
             gc.collect()
             continue
 
@@ -122,7 +121,6 @@ def _load_single_raw(dataset_name: str, max_subjects: Optional[int], task_type: 
         valid_events = events[np.isin(events[:, 2], valid_codes)]
         if len(valid_events) == 0:
             print("skip (no events after filtering)")
-            #del raw # saving RAM todo remove for better devices
             gc.collect()
             continue
 
@@ -139,7 +137,8 @@ def _load_single_raw(dataset_name: str, max_subjects: Optional[int], task_type: 
 
         # MNE → NumPy  (cast to float32 immediately to save RAM usage (todo, change if done on more powerful computer))
         data = epochs.get_data()
-                # Z-score each trial independently across time
+        
+        # Z-score each trial independently across time
         mean = data.mean(axis=-1, keepdims=True)
         std  = data.std(axis=-1, keepdims=True) + 1e-6
         data = (data - mean) / std
