@@ -14,6 +14,7 @@ from pytorch_lightning.tuner import Tuner
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import cohen_kappa_score
 
 from mne.decoding import CSP
 
@@ -176,6 +177,7 @@ def train_model(
 
     splits = get_splits(eval_strategy, y, subjects, dataset_ids=dataset_ids)
     fold_accs = []
+    fold_kappa_values = []
 
     for fold_idx, (train_idx, test_idx) in enumerate(splits):
         if len(splits) > 1:
@@ -197,14 +199,19 @@ def train_model(
             )
 
         fold_acc = float(np.mean(y_true == y_pred))
+        fold_kappa = float(cohen_kappa_score(y_true, y_pred))
         fold_accs.append(fold_acc)
-        print(f"  Fold {fold_idx + 1} accuracy: {fold_acc:.4f}")
+        fold_kappa_values.append(fold_kappa)
+        print(f"  Fold {fold_idx + 1} accuracy: {fold_acc:.4f} kappa: {fold_kappa:.4f}")
 
     mean_acc = float(np.mean(fold_accs))
     std_acc  = float(np.std(fold_accs))
-    print(f"\n  Final: {mean_acc:.4f} ± {std_acc:.4f}  ({len(fold_accs)} fold(s))")
+    mean_kappa = float(np.mean(fold_kappa_values))
+    std_kappa  = float(np.std(fold_kappa_values))
+    print(f"\n  Kappa    : {mean_kappa:.4f} ± {std_kappa:.4f}")
+    print(f"  Final: {mean_acc:.4f} ± {std_acc:.4f}  ({len(fold_accs)} fold(s))")
 
     # Store the last fold's predictions for confusion matrix in the caller
     predictions_dict[model_name] = (y_true, y_pred)
 
-    return mean_acc, std_acc
+    return mean_acc, std_acc, mean_kappa, std_kappa

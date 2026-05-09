@@ -56,7 +56,7 @@ def main() -> None:
                     Config.USE_LR_FINDER and
                     model_name in Config.LR_FINDER_USE
                 )
-                mean_acc, std_acc = train_model(
+                mean_acc, std_acc, mean_kappa, std_kappa = train_model(
                     model_name, X, y, subjects, spec,
                     predictions_dict, use_lr,
                     dataset_ids=dataset_ids
