@@ -14,7 +14,7 @@ from pytorch_lightning.tuner import Tuner
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import cohen_kappa_score
+from sklearn.metrics import cohen_kappa_score, f1_score
 
 from mne.decoding import CSP
 
@@ -178,6 +178,7 @@ def train_model(
     splits = get_splits(eval_strategy, y, subjects, dataset_ids=dataset_ids)
     fold_accs = []
     fold_kappa_values = []
+    fold_f1_values = []
 
     for fold_idx, (train_idx, test_idx) in enumerate(splits):
         if len(splits) > 1:
@@ -200,18 +201,23 @@ def train_model(
 
         fold_acc = float(np.mean(y_true == y_pred))
         fold_kappa = float(cohen_kappa_score(y_true, y_pred))
+        fold_f1 = float(f1_score(y_true, y_pred, average='macro'))
         fold_accs.append(fold_acc)
         fold_kappa_values.append(fold_kappa)
-        print(f"  Fold {fold_idx + 1} accuracy: {fold_acc:.4f} kappa: {fold_kappa:.4f}")
+        fold_f1_values.append(fold_f1)
+        print(f"  Fold {fold_idx + 1} accuracy: {fold_acc:.4f}, kappa: {fold_kappa:.4f}, f1: {fold_f1:.4f}")
 
     mean_acc = float(np.mean(fold_accs))
     std_acc  = float(np.std(fold_accs))
     mean_kappa = float(np.mean(fold_kappa_values))
     std_kappa  = float(np.std(fold_kappa_values))
-    print(f"\n  Kappa    : {mean_kappa:.4f} ± {std_kappa:.4f}")
-    print(f"  Final: {mean_acc:.4f} ± {std_acc:.4f}  ({len(fold_accs)} fold(s))")
+    mean_f1 = float(np.mean(fold_f1_values))
+    std_f1 = float(np.std(fold_f1_values))
+    print(f"\n  Final accuracy : {mean_acc:.4f} ± {std_acc:.4f}  ({len(fold_accs)} fold(s))")
+    print(f"  Final Kappa : {mean_kappa:.4f} ± {std_kappa:.4f}")
+    print(f"  Final F1 score : {mean_kappa:.4f} ± {std_kappa:.4f}")
 
     # Store the last fold's predictions for confusion matrix in the caller
     predictions_dict[model_name] = (y_true, y_pred)
 
-    return mean_acc, std_acc, mean_kappa, std_kappa
+    return mean_acc, std_acc, mean_kappa, std_kappa, mean_f1, std_f1

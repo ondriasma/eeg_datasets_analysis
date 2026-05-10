@@ -56,7 +56,7 @@ def main() -> None:
                     Config.USE_LR_FINDER and
                     model_name in Config.LR_FINDER_USE
                 )
-                mean_acc, std_acc, mean_kappa, std_kappa = train_model(
+                mean_acc, std_acc, mean_kappa, std_kappa, mean_f1, std_f1 = train_model(
                     model_name, X, y, subjects, spec,
                     predictions_dict, use_lr,
                     dataset_ids=dataset_ids
@@ -83,6 +83,10 @@ def main() -> None:
                     'model':          model_name,
                     'accuracy':       round(mean_acc, 6),
                     'std':            round(std_acc, 6),
+                    'mean kappa':     round(mean_kappa, 6),
+                    'std kappa':      round(std_kappa, 6),
+                    'mean f1':        round(mean_f1, 6),
+                    'std f1':         round(std_f1, 6),
                     'n_trials':       len(X),
                     'n_subjects':     int(len(np.unique(subjects))),
                     'kfold_splits':   Config.KFOLD_N_SPLITS,

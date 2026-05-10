@@ -59,7 +59,7 @@ class Config:
     """
 
     EXPERIMENTS = [
-        Experiment("Combined_LeftRight", ["PhysionetMI"], task_type="movement_vs_rest", max_subjects=3),
+        Experiment("Combined_LeftRight", ["PhysionetMI"], task_type="left_vs_right", max_subjects=3),
         
         #Experiment("Combined_LeftRight2", ["Weibo2014", "Beetl2021_A"], task_type="movement_vs_rest", max_subjects=None),
 
