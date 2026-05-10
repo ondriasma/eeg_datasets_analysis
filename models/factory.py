@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import numpy as np
 import torch
-from braindecode.models import Deep4Net, EEGNetv4, ShallowFBCSPNet
+from braindecode.models import Deep4Net, EEGNetv4, ShallowFBCSPNet, EEGConformer, EEGNeX, CTNet, TIDNet
 from torch.utils.data import DataLoader, TensorDataset
 
 from braindecode.models import BENDR, CBraMod
@@ -45,6 +45,34 @@ def create_model(
             n_times=input_window_samples,
             final_conv_length='auto',
         )
+    if model_name == 'EEGConformer':
+        return EEGConformer(
+            n_chans=n_channels,
+            n_outputs=n_classes,
+            n_times=input_window_samples,
+        )
+    if model_name == 'CTNet':
+        return CTNet(
+            n_chans=n_channels,
+            n_outputs=n_classes,
+            n_times=input_window_samples,
+        )
+    if model_name == 'EEGNeX':
+        return EEGNeX(
+            n_chans=n_channels,
+            n_outputs=n_classes,
+            n_times=input_window_samples,
+        )
+    if model_name == 'TIDNet':
+        return TIDNet(
+            n_chans=n_channels,
+            n_outputs=n_classes,
+            n_times=input_window_samples,
+        )
+
+
+
+    """
     if model_name == 'BENDR':
         return BENDR.from_pretrained(
             "braindecode/braindecode-bendr",
@@ -63,8 +91,9 @@ def create_model(
             sfreq=Config.RESAMPLE_FREQ, 
             
         )
+    """
     raise ValueError(f"Unknown model: '{model_name}'. Choose from: EEGNet, ShallowConvNet, Deep4Net")
-
+    
 
 def make_loader(X: np.ndarray, y: np.ndarray, shuffle: bool) -> DataLoader:
     """Wraps NumPy arrays in a TensorDataset and returns a DataLoader."""

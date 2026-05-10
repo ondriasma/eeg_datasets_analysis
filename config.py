@@ -71,11 +71,13 @@ class Config:
 
     MODELS = [
         'CSP+LDA',
-        'EEGNet',
+        #'EEGNet',
         #'ShallowConvNet',
         #'Deep4Net',
-        #'BENDR',
-        #'CBraMod',
+        'EEGConformer',
+        'CTnet',
+        #'EEGNeX',
+        #'TIDNet'
     ]
 
     LR_FINDER_USE = {'EEGNet', 'ShallowConvNet', 'Deep4Net'}
