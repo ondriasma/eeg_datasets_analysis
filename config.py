@@ -71,11 +71,11 @@ class Config:
 
     MODELS = [
         'CSP+LDA',
-        #'EEGNet',
+        'EEGNet',
         #'ShallowConvNet',
         #'Deep4Net',
-        'EEGConformer',
-        'CTnet',
+        #'EEGConformer',
+        #'CTnet',
         #'EEGNeX',
         #'TIDNet'
     ]

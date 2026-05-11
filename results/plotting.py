@@ -24,7 +24,7 @@ _MODEL_COLORS = {
     'Deep4Net':       '#fce762',
 }
 
-
+'''
 def plot_model_comparison(results_df: pd.DataFrame, run_id: str) -> None:
     """Grouped bar chart of accuracy for every model experiment in this run."""
     run_df = results_df[results_df['run_id'] == run_id]
@@ -76,7 +76,7 @@ def plot_model_comparison(results_df: pd.DataFrame, run_id: str) -> None:
     print(f"  Saved: {path}")
     plt.close()
 
-
+'''
 def plot_confusion_matrices(predictions_dict: dict, spec, run_id: str) -> None:
 
     """One confusion matrix panel per model, saved as a single PNG."""
@@ -86,9 +86,7 @@ def plot_confusion_matrices(predictions_dict: dict, spec, run_id: str) -> None:
         return
 
     class_names = (
-        ['Left Hand', 'Right Hand'] if task_type == 'left_vs_right'
-        else ['Rest', 'Movement']
-    )
+        ['Left Hand', 'Right Hand'] if task_type == 'left_vs_right' else ['Rest', 'Movement'])
 
     fig, axes = plt.subplots(1, n_models, figsize=(5 * n_models, 4))
     if n_models == 1:
@@ -97,11 +95,9 @@ def plot_confusion_matrices(predictions_dict: dict, spec, run_id: str) -> None:
     for ax, (model_name, (y_true, y_pred)) in zip(axes, predictions_dict.items()):
         cm   = confusion_matrix(y_true, y_pred)
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
-        disp.plot(ax=ax, cmap='Blues', values_format='d')
-        ax.set_title(model_name, fontsize=12, fontweight='bold')
+        disp.plot(ax=ax, cmap='Blues', values_format='d', colorbar=False)
         acc = np.mean(y_true == y_pred)
-        ax.text(0.5, -0.15, f'Accuracy: {acc:.3f}',
-                ha='center', transform=ax.transAxes, fontsize=10)
+        ax.set_title(f'{model_name}\nAccuracy: {acc:.3f}', fontsize=12, fontweight='bold')
 
     plt.suptitle(
         f'Confusion Matrices — {spec.name} ({task_type})  [{run_id}]',

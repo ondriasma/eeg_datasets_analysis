@@ -14,7 +14,7 @@ from datasets import DATASET_EVENT_MAPPINGS, print_dataset_summary
 from processing.loading import load_data
 from models.training import train_model
 from results.persistence import append_results
-from results.plotting import plot_confusion_matrices, plot_model_comparison
+from results.plotting import plot_confusion_matrices
 
 
 def main() -> None:
@@ -117,7 +117,7 @@ def main() -> None:
             'accuracy', 'std', 'n_trials', 'n_subjects',
         ]].to_string(index=False))
 
-    plot_model_comparison(all_results, run_id)
+    #plot_model_comparison(all_results, run_id)
 
     print("SUMMARY  (this run only)")
     print("-" * 70)
