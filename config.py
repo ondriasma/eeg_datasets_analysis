@@ -72,15 +72,15 @@ class Config:
     MODELS = [
         'CSP+LDA',
         'EEGNet',
-        #'ShallowConvNet',
+        'ShallowConvNet',
         #'Deep4Net',
         #'EEGConformer',
-        #'CTnet',
+        'CTnet',
         #'EEGNeX',
-        #'TIDNet'
+        'TIDNet'
     ]
 
-    LR_FINDER_USE = {'EEGNet', 'ShallowConvNet', 'Deep4Net'}
+    LR_FINDER_USE = {'EEGNet', 'ShallowConvNet', 'Deep4Net', 'EEGConformer', 'CTNet', 'EEGNeX', 'TIDNet'}
 
 
     TASK_TYPE = 'movement_vs_rest' #or left vs right
@@ -90,10 +90,11 @@ class Config:
     CHANNELS = ['C3', 'Cz', 'C4']
 
     # Evaluation strategy - implemented possibilities
-    # 'within_subject_split'     — random trial split
-    # 'stratified_kfold' — K-fold on trials
-    # 'loso'             — Leave-One-Subject-Out
-    # 'subject_split'    — holds out a fraction of subjects entirely
+    # 'within_subject_split'     - random trial split
+    # 'stratified_kfold' - K-fold on trials
+    # 'loso'             - Leave-One-Subject-Out
+    # 'subject_split'    - holds out a fraction of subjects entirely
+    # 'dataset_split'    - train on one dataset, test on another
     EVAL_STRATEGY = 'stratified_kfold'
     TEST_SIZE = 0.2 # ratio for within subject split
     KFOLD_N_SPLITS = 5
@@ -113,8 +114,7 @@ class Config:
     WEIGHT_DECAY  = 0.01
     
 
-    USE_LR_FINDER = True
-    USE_LR_FINDER_FOR_ALL = False #if LR finding runs for every model or just one
+    USE_LR_FINDER = False
     LR_FINDER_NUM_STEPS = 50
 
     NUM_WORKERS = 0 #number of background processes DataLoader uses to prefetch batches

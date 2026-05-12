@@ -114,11 +114,13 @@ def _run_one_fold_deep(
         lightning_model.learning_rate = suggested_lr
         print(f"Suggested LR: {suggested_lr:.2e}")
         fig = lr_finder.plot(suggest=True)
+        '''
         fig.savefig(
             Config.OUTPUT_DIR / 'plots' /
             f'lr_finder_{spec_name}_{model_name}_fold{fold_idx}.png',
             dpi=150, bbox_inches='tight',
         )
+        '''
         import matplotlib.pyplot as plt
         plt.close(fig)
 
@@ -193,7 +195,7 @@ def train_model(
         if model_name == 'CSP+LDA':
             y_true, y_pred = _run_one_fold_csp(X_train, X_test, y_train, y_test)
         else:
-            run_lr = use_lr_finder and (fold_idx == 0)
+            run_lr = use_lr_finder and (fold_idx == 0) and (model_name in Config.LR_FINDER_USE)
             y_true, y_pred = _run_one_fold_deep(
                 model_name, X_train, X_test, y_train, y_test,
                 spec.name, fold_idx, run_lr,

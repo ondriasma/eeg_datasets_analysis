@@ -115,11 +115,11 @@ def _dataset_split(
 
 # functions mapping
 SPLIT_FUNCTIONS = {
-    'within_subject_split':     _splits_within_subject,
+    'within_subject_split': _splits_within_subject,
     'stratified_kfold': _splits_kfold,
-    'loso':             _splits_loso,
-    'subject_split':    _splits_subject_split,
-    'dataset_split':        _dataset_split,
+    'loso': _splits_loso,
+    'subject_split': _splits_subject_split,
+    'dataset_split': _dataset_split,
 }
 
 
