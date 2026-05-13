@@ -16,6 +16,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import cohen_kappa_score, f1_score
 
+from processing.alignment import apply_euclidean_alignment, should_align
+
+
 from mne.decoding import CSP
 
 from config import Config
@@ -172,6 +175,7 @@ def train_model(
     Returns mean and standard accuracy aggregated across all folds. 
     """
     eval_strategy = spec.resolve_eval_strategy()
+    use_ea = Config.USE_EUCLIDEAN_ALIGNMENT and should_align(eval_strategy)
 
     print(f"TRAINING: {model_name}  |  strategy: {eval_strategy}  |  {spec.name}")
     #print(f"Train class dist: {np.bincount(y_train)}, Test class dist: {np.bincount(y_test)}")
@@ -191,6 +195,15 @@ def train_model(
 
         X_train, X_test = X[train_idx], X[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
+
+        if use_ea:
+            subjects_train = subjects[train_idx]
+            subjects_test  = subjects[test_idx]
+            X_train, X_test = apply_euclidean_alignment(
+                X_train, X_test,
+                subjects_train, subjects_test,
+            )
+
 
         if model_name == 'CSP+LDA':
             y_true, y_pred = _run_one_fold_csp(X_train, X_test, y_train, y_test)

@@ -37,6 +37,7 @@ def create_model(
             n_outputs=n_classes,
             n_times=input_window_samples,
             final_conv_length='auto',
+            drop_prob=0.5,
         )
     if model_name == 'Deep4Net':
         return Deep4Net(
@@ -92,7 +93,7 @@ def create_model(
             
         )
     """
-    raise ValueError(f"Unknown model: '{model_name}'. Choose from: EEGNet, ShallowConvNet, Deep4Net")
+    raise ValueError(f"Unknown model: '{model_name}'. Choose from valid options available in config.py")
     
 
 def make_loader(X: np.ndarray, y: np.ndarray, shuffle: bool) -> DataLoader:
