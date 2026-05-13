@@ -59,7 +59,7 @@ class Config:
     """
 
     EXPERIMENTS = [
-        Experiment("Combined_LeftRight", ["Weibo2014"], task_type="left_vs_right", max_subjects=5),
+        Experiment("Combined_LeftRight", ["Weibo2014"], task_type="left_vs_right", max_subjects=None),
         
         #Experiment("Combined_LeftRight2", ["Weibo2014", "Beetl2021_A"], task_type="movement_vs_rest", max_subjects=None),
 
@@ -72,12 +72,12 @@ class Config:
     MODELS = [
         'CSP+LDA',
         'EEGNet',
-        'ShallowConvNet',
+        #'ShallowConvNet',
         #'Deep4Net',
         #'EEGConformer',
-        'CTNet',
+        #'CTNet',
         #'EEGNeX',
-        'TIDNet'
+        #'TIDNet'
     ]
 
     LR_FINDER_USE = {'EEGNet', 'ShallowConvNet', 'Deep4Net', 'EEGConformer', 'CTNet', 'EEGNeX', 'TIDNet'}
@@ -95,7 +95,7 @@ class Config:
     # 'loso'             - Leave-One-Subject-Out
     # 'subject_split'    - holds out a fraction of subjects entirely
     # 'dataset_split'    - train on one dataset, test on another
-    EVAL_STRATEGY = 'within_subject_split'
+    EVAL_STRATEGY = 'loso'
     TEST_SIZE = 0.2 # ratio for within subject split
     KFOLD_N_SPLITS = 5
     SUBJECT_TEST_RATIO = 0.2 # ratio for subject_split
@@ -117,7 +117,7 @@ class Config:
     USE_LR_FINDER = False
     LR_FINDER_NUM_STEPS = 50
 
-    USE_EUCLIDEAN_ALIGNMENT = False
+    USE_EUCLIDEAN_ALIGNMENT = True
 
     NUM_WORKERS = 0 #number of background processes DataLoader uses to prefetch batches
     PIN_MEMORY = True

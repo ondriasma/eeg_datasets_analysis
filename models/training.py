@@ -55,22 +55,39 @@ def _run_one_fold_deep(
     spec_name:     str,
     fold_idx:      int,
     use_lr_finder: bool,
+    subjects_train: np.ndarray | None = None,
 ) -> tuple[np.ndarray, np.ndarray]:
     """
     Train and evaluate a deep model on a single fold.
     Uses Pytorch LightningModule.
     """
-
-    sub_train_idx, sub_val_idx = train_test_split(
-        np.arange(len(X_train)),
-        test_size=0.15,
-        stratify=y_train,
-        random_state=Config.RANDOM_SEED,
-    )
-
-    train_loader = make_loader(X_train, y_train, shuffle=True)
     test_loader  = make_loader(X_test,  y_test,  shuffle=False)
-    val_loader   = make_loader(X_train[sub_val_idx], y_train[sub_val_idx], shuffle=False)
+
+    if subjects_train is not None:
+        # Nested LOSO: hold out one training subject for validation.
+        # Rotate through available subjects so each fold gets a different one.
+        unique_train_subj = np.unique(subjects_train)
+        val_subj          = unique_train_subj[fold_idx % len(unique_train_subj)]
+
+        val_mask   = subjects_train == val_subj
+        pure_mask  = ~val_mask
+
+        print(f"  Validation subject: {val_subj}  "
+            f"({val_mask.sum()} trials)  |  "
+            f"Pure train: {pure_mask.sum()} trials")
+
+        train_loader = make_loader(X_train[pure_mask], y_train[pure_mask], shuffle=True)
+        val_loader   = make_loader(X_train[val_mask],  y_train[val_mask],  shuffle=False)
+    else:
+        _, sub_val_idx = train_test_split(
+            np.arange(len(X_train)),
+            test_size=0.15,
+            stratify=y_train,
+            random_state=Config.RANDOM_SEED,
+        )
+        train_loader = make_loader(X_train, y_train, shuffle=True)
+
+        val_loader   = make_loader(X_train[sub_val_idx], y_train[sub_val_idx], shuffle=False)
 
     n_channels = X_train.shape[1]
     n_classes = len(np.unique(y_train))
@@ -176,6 +193,9 @@ def train_model(
     """
     eval_strategy = spec.resolve_eval_strategy()
     use_ea = Config.USE_EUCLIDEAN_ALIGNMENT and should_align(eval_strategy)
+    if use_ea:
+        print(f"  Euclidean Alignment: ON")
+
 
     print(f"TRAINING: {model_name}  |  strategy: {eval_strategy}  |  {spec.name}")
     #print(f"Train class dist: {np.bincount(y_train)}, Test class dist: {np.bincount(y_test)}")
@@ -209,9 +229,11 @@ def train_model(
             y_true, y_pred = _run_one_fold_csp(X_train, X_test, y_train, y_test)
         else:
             run_lr = use_lr_finder and (fold_idx == 0) and (model_name in Config.LR_FINDER_USE)
+            subj_train_for_fold = subjects[train_idx] if eval_strategy == 'loso' else None
             y_true, y_pred = _run_one_fold_deep(
                 model_name, X_train, X_test, y_train, y_test,
                 spec.name, fold_idx, run_lr,
+                subjects_train = subj_train_for_fold
             )
 
         fold_acc = float(np.mean(y_true == y_pred))
@@ -230,7 +252,7 @@ def train_model(
     std_f1 = float(np.std(fold_f1_values))
     print(f"\n  Final accuracy : {mean_acc:.4f} ± {std_acc:.4f}  ({len(fold_accs)} fold(s))")
     print(f"  Final Kappa : {mean_kappa:.4f} ± {std_kappa:.4f}")
-    print(f"  Final F1 score : {mean_kappa:.4f} ± {std_kappa:.4f}")
+    print(f"  Final F1 score : {mean_f1:.4f} ± {std_f1:.4f}")
 
     # Store the last fold's predictions for confusion matrix in the caller
     predictions_dict[model_name] = (y_true, y_pred)

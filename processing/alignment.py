@@ -112,10 +112,10 @@ def apply_euclidean_alignment(
         test_mask = subjects_test == subj
         if subj in train_subj_set:
             #subject present - reuse training alignment
-            mask = subjects_train == subj
+            #mask = subjects_train == subj
             R_inv = subj_matrices[subj]
         else:
             #subject unseen - compute from their test trials (no label leakage)
-            R_inv = _invsqrtm(_mean_covariance(X_test[mask]))
-        X_test_aligned[mask] = np.einsum('cd,idt->ict', R_inv, X_test[test_mask])
+            R_inv = _invsqrtm(_mean_covariance(X_test[test_mask]))
+        X_test_aligned[test_mask] = np.einsum('cd,idt->ict', R_inv, X_test[test_mask])
     return X_train_aligned, X_test_aligned
