@@ -106,7 +106,7 @@ def _load_single_raw(dataset_name: str, max_subjects: Optional[int], task_type: 
         # Braindecode → MNE structures
         raw = ds.raw
         events, event_id = mne.events_from_annotations(raw)
-        subject_id = ds.description.get('subject', idx)
+        subject_id = int(ds.description.get('subject', idx))
 
         valid_event_ids = {# filters only the events relevant to our task
             name: event_id[name]
@@ -135,7 +135,7 @@ def _load_single_raw(dataset_name: str, max_subjects: Optional[int], task_type: 
             picks=picks,
         )
 
-        # MNE → NumPy  (cast to float32 immediately to save RAM usage (todo, change if done on more powerful computer))
+        
         data = epochs.get_data()
         
         # Z-score each trial independently across time
@@ -226,7 +226,7 @@ def load_data(spec) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray] | t
         print(f"Alert - Timepoint mismatch {n_timepoints_list} -> truncating to {min_t}")
 
     X_parts = [X[:, :min_ch, :min_t] for X in X_parts]
-    X_merged = np.concatenate([X[:, :min_ch, :min_t] for X in X_parts], axis=0)
+    X_merged = np.concatenate(X_parts, axis=0)
     y_merged = np.concatenate(y_parts, axis=0)
     subj_merged = np.concatenate(subj_parts, axis=0)
     dataset_ids_merged = np.concatenate(dataset_id_parts, axis=0)

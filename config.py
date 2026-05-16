@@ -59,7 +59,7 @@ class Config:
     """
 
     EXPERIMENTS = [
-        Experiment("Combined_LeftRight", ["Weibo2014"], task_type="left_vs_right", max_subjects=None),
+        Experiment("Combined_LeftRight", ["PhysionetMI"], task_type="left_vs_right", max_subjects=8),
         
         #Experiment("Combined_LeftRight2", ["Weibo2014", "Beetl2021_A"], task_type="movement_vs_rest", max_subjects=None),
 
@@ -83,7 +83,7 @@ class Config:
     LR_FINDER_USE = {'EEGNet', 'ShallowConvNet', 'Deep4Net', 'EEGConformer', 'CTNet', 'EEGNeX', 'TIDNet'}
 
 
-    TASK_TYPE = 'movement_vs_rest' #or left vs right
+    TASK_TYPE = 'left_vs_right' #or left vs right
     MAX_SUBJECTS = None
 
 
@@ -105,7 +105,7 @@ class Config:
     HIGH_CUT_HZ   = 30
     RESAMPLE_FREQ = 100
     TMIN = 0.0
-    TMAX = 3.99
+    TMAX = 2.99
 
     # Training config
     BATCH_SIZE    = 64

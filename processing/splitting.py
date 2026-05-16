@@ -19,6 +19,7 @@ from config import Config
 def _splits_within_subject(
     y: np.ndarray,
     subjects: np.ndarray,
+    dataset_ids=None,
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     """Single train/test split (splits randomly across individual trials, ignoring which subject they came from)."""
     idx = np.arange(len(y))
@@ -34,6 +35,7 @@ def _splits_within_subject(
 def _splits_kfold(
     y: np.ndarray,
     subjects: np.ndarray,
+    dataset_ids=None,
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     """Stratified K-Fold cross-validation on trials."""
     skf = StratifiedKFold(
@@ -48,6 +50,7 @@ def _splits_kfold(
 def _splits_loso(
     y: np.ndarray,
     subjects: np.ndarray,
+    dataset_ids=None,
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     """
     Leave-One-Subject-Out.
@@ -70,6 +73,7 @@ def _splits_loso(
 def _splits_subject_split(
     y: np.ndarray,
     subjects: np.ndarray,
+    dataset_ids=None
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     """
     Hold out a random fraction of subjects entirely.
@@ -96,7 +100,7 @@ def _splits_subject_split(
 def _dataset_split(
     y: np.ndarray, 
     subjects: np.ndarray, 
-    dataset_ids: np.ndarray = None  # Add these to match signature
+    dataset_ids: np.ndarray = None,
 ) -> list[tuple[np.ndarray, np.ndarray]]:
     if dataset_ids is None:
         raise ValueError("dataset_ids required for 'dataset_split' strategy.")
@@ -124,16 +128,12 @@ SPLIT_FUNCTIONS = {
 
 
 def get_splits(eval_strategy: str, y: np.ndarray, subjects: np.ndarray, dataset_ids: np.ndarray = None) -> list[tuple[np.ndarray, np.ndarray]]:
-    
     fn = SPLIT_FUNCTIONS.get(eval_strategy)
     if fn is None:
         raise ValueError(
             f"Unknown eval_strategy '{eval_strategy}'. "
             f"Choose from: {list(SPLIT_FUNCTIONS)}"
         )
-    if eval_strategy == 'dataset_split':
-        splits = fn(y, subjects, dataset_ids)
-    else:
-        splits = fn(y, subjects)
+    splits = fn(y, subjects, dataset_ids)
     print(f"  Evaluation: {eval_strategy}  ({len(splits)} fold(s))")
     return splits

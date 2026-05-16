@@ -101,6 +101,13 @@ DATASET_EVENT_MAPPINGS = {
         'original_events': ['rest', 'right_elbow_flexion', 'right_hand'],
         'movement_vs_rest': {'rest': 0, 'right_elbow_flexion': 1, 'right_hand': 1},
     },
+    'Cho2017': {
+        'description': '52 subjects, 2-class MI (left vs right hand)',
+        'n_subjects': 52,
+        'original_events': ['left_hand', 'right_hand'],
+        'left_vs_right': {'left_hand': 0, 'right_hand': 1},
+        'movement_vs_rest': None,
+    },
 }
 
 
